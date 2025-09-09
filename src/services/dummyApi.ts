@@ -1,6 +1,8 @@
 import { User, LoginCredentials, AuthResponse } from '@/types/auth';
 import { Quiz, Question, QuizSubmission } from '@/types/quiz';
 import { Video } from '@/types/video';
+import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
 
 // Dummy data
 const dummyUsers: User[] = [
@@ -81,29 +83,47 @@ export const dummyApi = {
   // Auth APIs
   async login(credentials: LoginCredentials): Promise<AuthResponse | null> {
     await delay(500);
-    
-    const user = dummyUsers.find(u => u.username === credentials.username);
-    
-    // Simple password validation (in real app, this would be secure)
-    const validCredentials = [
-      { username: 'admin', password: 'admin123' },
-      { username: 'teacher1', password: 'teacher123' },
-      { username: 'student1', password: 'student123' },
-      { username: 'student2', password: 'student123' }
-    ];
-    
-    const isValid = validCredentials.some(
-      cred => cred.username === credentials.username && cred.password === credentials.password
-    );
-    
-    if (user && isValid) {
-      return {
-        token: `dummy_token_${user.id}_${Date.now()}`,
-        user
-      };
+    let user:User | null = null;
+    const response = null;
+    try {
+      // Create a FormData object to send data as multipart/form-data
+      const formData = new FormData();
+      formData.append('username', credentials.username);
+      formData.append('password', credentials.password);
+
+      // Send the POST request using axios
+      const response = await axios.post('https://fastapi-video-quiz-complete.onrender.com/auth/login', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Ensure correct content type
+        },
+      });
+
+      // Try decoding the token if login is successful
+      try {
+        const decoded = jwtDecode(response.data.access_token);
+        user = decoded// This should work if token is valid
+        console.log(decoded); // You can inspect the decoded token if needed
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+
+      // Check if the user exists
+      //const user = dummyUsers.find(u => u.username === credentials.username);
+      if (user) {
+        return {
+          token: response?.data?.access_token,
+          user
+        };
+      }
+
+      console.error('User not found');
+      return null;
+    } catch (error) {
+      console.error('Error during login:', error);
+      return null;
     }
-    
-    return null;
+
+  
   },
 
   async logout(): Promise<boolean> {
