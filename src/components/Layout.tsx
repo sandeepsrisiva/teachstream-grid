@@ -19,7 +19,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-sm">
                 <User size={16} />
-                <span className="font-medium">{user.name || user.username}</span>
+                <span className="font-medium">{user.name || user.username || user.userName}</span>
                 <span className="text-muted-foreground">({user.role})</span>
               </div>
               <Button variant="outline" size="sm" onClick={logout}>
