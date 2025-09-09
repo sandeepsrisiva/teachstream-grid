@@ -231,7 +231,7 @@ export const UserManager: React.FC = () => {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-medium">{user.name || user.username}</h3>
-                        <Badge variant={getRoleBadgeVariant(user.role)}>
+                        <Badge variant={getRoleBadgeVariant(user.role) as "default" | "secondary" | "destructive" | "outline"}>
                           {user.role}
                         </Badge>
                       </div>
