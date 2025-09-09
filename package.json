@@ -3,6 +3,13 @@
   "version": "0.0.0",
   "lockfileVersion": 3,
   "requires": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
   "packages": {
     "": {
       "name": "vite_react_shadcn_ts",
